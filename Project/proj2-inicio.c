@@ -8,11 +8,20 @@
 #define cmd_size 6
 
 typedef struct {
-	char name[name_size],msg[msg_size], hashtag[hashtag_size];
+	char name[name_size], msg[msg_size], hashtag[hashtag_size];
 } Item;
 
+typedef struct {
+	Item *item;
+	link *next;
+} Node;
+
+typedef struct {
+	Node *node;
+} link;	
+Node *head;
+
 int main(){
-	
 	int maxHashtag;
 	char cmd[cmd_size], name[name_size],msg[msg_size], hashtag[hashtag_size]; /* comando quit, send, etc*/
 	scanf("%d", maxHashtag);
@@ -23,31 +32,43 @@ int main(){
 		switch(cmd){
 			case 'send':{
 				send_msg()
-		
-	
-
-
-
-
+			}
+			case 'list':{
+				list_hash()
+			}
+			case 'close':{
+				close_hash()
 			}
 		}
 	}
+	
 	return 0
 }
 
+void list_hash(){
+
+	fgets(char *hashtag, int hashtag_size, FILE *stdin);
+	
+	if ((STsearch(hashtag))!=NULL)
+
+}
 
 void send_msg(){
+	
+	/*Para trabalhar com outro tipo de items mudar esta funcao*/
+	
+	Item item;
+
 	fgets(char *name, int name_size, FILE *stdin);
 	fgets(char *hashtag, int hashtag_size, FILE *stdin);
 	fgets(char *msg, int msg_size, FILE *stdin);
 	
-	Item item;
+	
 	item->name=name;
 	item->hashtag=hashtag;
 	item->msg=msg;
 	
-	STsearch(
-	/* alocar memoria e colocar item em novo_>item*/
+	STinsert(item);
 	
 }
 
@@ -64,31 +85,67 @@ int hash(char *v, int M)
 
 
 
-/*----------------------------------------------------*/
+/*------------------------Procura Linear Dinâmica----------------------------*/
 
 
+/*Mudar os valores para acomodar o caderno primeira pagina*/
+#define null(A) (key(st[A]) == key(NULLitem))
 static link *heads;
-static int M;
+static int N, M;
+static Item *st;
 
 void STinit(int max) {
 	int i;
-	M = max;
-	heads = (link*)malloc(M*sizeof(link));
-	for (i = 0; i < M; i++) heads[i] = NULL;
+	N = 0; 
+	M = 2*max;
+	st = (Item*)malloc(M*sizeof(Item));
+	for (i = 0; i < M; i++) 
+		st[i] = NULLitem; 
 }
 
-Item STsearch(Key v) {
-	return	searchList(heads[hash(v, M)], v);
+Item STsearch(Key v)
+{ 
+	int i = hash(v, M);
+	while (!null(i))
+		if (eq(v, key(st[i]))
+			return st[i];
+		else
+			i = (i+1) % M;
+	return NULLitem;
 }
 
 void STinsert(Item item) {
-	int i = hash(key(item), M);
-	heads[i] =	insertBeginList(heads[i], item);
+	Key v = key(item);
+	int i = hash(v, M);
+	while (!null(i)) i = (i+1) % M;
+	st[i] = item;
+	N++;
 }
 
-void STdelete(Item item) {
-	int i = hash(key(item), M);
-	heads[i] = removeItemList(heads[i], item);
+void expand() {
+	int i; 
+	Item *t = st;
+	init(M+M);
+	for (i = 0; i < M/2; i++)
+		if (key(t[i]) != key(NULLitem))
+			STinsert(t[i]);
+	free(t);
+}
+
+void STdelete(Item item)
+{ 
+	int j, i = hash(key(item->), M); Item v;
+	while (!null(i))
+		if (eq(key(item), key(st[i])) break;
+		else i = (i+1) % M;
+	if (null(i)) return;
+	st[i] = NULLitem; 
+	N--;
+	for (j = (i+1) % M; !null(j); j = (j+1) % M, N--) {
+		v = st[j]; 
+		st[j] = NULLitem;
+		STinsert(v);
+	}	
 }
 
 
@@ -96,6 +153,13 @@ void STdelete(Item item) {
 /*----------------------------------------------
 --------------LISTA-----------------------------
 ----------------------------------------------*/
+
+Node newNode(Item item){
+	Node *new;
+	new = (Node *) malloc(sizeof(Node))
+	new->item = item
+	new->node = NULL
+}
 
 link removeItemList(link *heads, Item item)/*mudar item*/
 {
@@ -143,9 +207,9 @@ link lastList(link *heads)
 	}
 }
 
+
 /* */
-void
-STfree(SThash h)
+void STfree(SThash h)
 {
   free(h->tab);
   free(h);
